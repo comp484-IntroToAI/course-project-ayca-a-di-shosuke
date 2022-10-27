@@ -1,10 +1,10 @@
-from mosestokenizer import *
+from sacremoses import MosesDetokenizer, MosesTokenizer
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
 class Setup():
     def __init__(self):
-        self.tokenize = MosesTokenizer('en')
+        self.tokenize = MosesTokenizer()
     
     def readFile(self, data_name = 'scientific_papers'):
         self.train_set = tfds.load(data_name, split='train')
