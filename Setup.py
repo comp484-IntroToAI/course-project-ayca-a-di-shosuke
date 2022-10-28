@@ -13,7 +13,7 @@ class Setup():
             
     
     def buildVocabulary(self):
-        self.vocab = self.tokenize.tokenize(self.train_set)
+        self.vocab = self.tokenize.tokenize(list(self.train_set)[0])
         
     def printVocabulary(self):
         print(self.vocab)
