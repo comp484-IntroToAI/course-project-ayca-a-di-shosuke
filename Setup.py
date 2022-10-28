@@ -38,20 +38,24 @@ class Setup():
             article_num = article_num + 1
             if article_num % 1000 == 0:
                 print("saving article " + str(article_num))
-                current_list = self.read_list()
-                current_list.extend(self.vocab)
-                current_list = list(set(current_list))
-                self.write_list(current_list)
+                self.saveWords()
                 self.vocab = []
-        self.write_list(self.vocab)
+        self.saveWords()
+        
+    def saveWords(self):
+        current_list = self.read_list()
+        current_list.extend(self.vocab)
+        current_list = list(set(current_list))
+        self.write_list(current_list)
         
     def printVocabulary(self):
         print("fetching vocabulary")
-        print(self.read_list())
+        print(len(self.read_list()))
 
         
 if __name__ == "__main__":
     setup = Setup()
+    # setup.printVocabulary()
     setup.readFile()
     setup.buildVocabulary()
-    # setup.printVocabulary()
+    setup.printVocabulary()
