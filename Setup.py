@@ -26,7 +26,7 @@ class Setup():
             
     def buildVocabulary(self):
         print("building vocabulary")
-        self.write_list(["asfg"])
+        self.write_list([])
         self.vocab = []
         article_num = 0
         for article in self.train_set:
