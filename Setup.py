@@ -55,7 +55,7 @@ class Setup():
         
 if __name__ == "__main__":
     setup = Setup()
-    # setup.printVocabulary()
-    setup.readFile()
-    setup.buildVocabulary()
     setup.printVocabulary()
+    # setup.readFile()
+    # setup.buildVocabulary()
+    # setup.printVocabulary()
