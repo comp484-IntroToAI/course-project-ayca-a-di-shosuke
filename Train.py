@@ -13,15 +13,17 @@ class Train():
         self.md = MosesDetokenizer()
 
     def tokenize_sample(self):
-        
         for article in self.train_set:
-            self.get_sentences(article)
+            self.create_individuals(article)
             
     def create_individuals(self, article):
         words = self.mt.tokenize(article['article'].lower())
         word_weights = self.get_word_weights(words) 
 
         sentences, sentence_weights = self.get_sentences(words, word_weights)
+
+        for i in range(len(sentences)):
+            print(sentences[i], sentence_weights[i])
 
         # TODO: for each sentence, create an individual with weight_attr sentence_weights[i]
 
@@ -33,9 +35,12 @@ class Train():
         weights_to_return = []
 
         for word in words:
-            i = vocab.index(word)
-            weight = weights[i]
-            weights_to_return.append(weight)
+            try:
+                i = vocab.index(word)
+                weight = weights[i]
+                weights_to_return.append(weight)
+            except ValueError:
+                weights_to_return.append(0)
 
         return weights_to_return
 
