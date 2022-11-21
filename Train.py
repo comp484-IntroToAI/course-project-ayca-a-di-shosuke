@@ -13,17 +13,21 @@ class Train():
         self.md = MosesDetokenizer()
 
     def tokenize_sample(self):
-        for article in list(self.train_set)[0:1]:
+        i = 0
+        for article in list(self.train_set):
+            print(i)
             self.create_individuals(article)
+            i += 1
             
     def create_individuals(self, article):
         words = self.mt.tokenize(str(article['article']).lower())
         word_weights = self.get_word_weights(words) 
 
         sentences, sentence_weights = self.get_sentences(words, word_weights)
-
-        for i in range(len(sentences)):
-            print(sentences[i], sentence_weights[i])
+        self.write_list(sentences, 'sentences')
+        self.write_list(sentence_weights, 'SentenceWeights')
+        # for i in range(len(sentences)):
+        #     print(sentences[i], sentence_weights[i])
 
         # TODO: for each sentence, create an individual with weight_attr sentence_weights[i]
 
@@ -76,7 +80,7 @@ class Train():
     # Read list to memory
     def read_list(self, file_name):
         with open(file_name, 'rb') as fp:
-            n_list = pickle.load(fp)[0:2000]
+            n_list = pickle.load(fp)
             return n_list
     
     def readFile(self, data_name = 'scientific_papers'):
@@ -111,6 +115,8 @@ if __name__ == "__main__":
     
     train.readFile()
     train.tokenize_sample()
+    print(train.read_list('sentences'))
+    print(train.read_list('SentenceWeights'))
 
 
 
