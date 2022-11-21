@@ -14,7 +14,7 @@ class Train():
 
     def tokenize_sample(self):
         i = 0
-        for article in list(self.train_set):
+        for article in list(self.train_set)[0:1]:
             print(i)
             self.create_individuals(article)
             i += 1
@@ -32,15 +32,15 @@ class Train():
         # TODO: for each sentence, create an individual with weight_attr sentence_weights[i]
 
     def get_words(self, article):
-        ar = article['article'].lower()
-        ar_no_new_lines = ar.replace("\ n", "")
+        ar = str(article['article']).lower()
+        ar_no_new_lines = ar.replace("\\ n", "")
         tokens = self.mt.tokenize(ar_no_new_lines)
         return tokens
         
 
     def get_word_weights(self, words):
         vocab = self.read_list("filtered")
-        weights = self.read_list("weights")
+        weights = self.read_list("weights")[0:5000]
 
         weights_to_return = []
 
@@ -119,16 +119,10 @@ if __name__ == "__main__":
     ## setup.create_parallel_weight_list()
     # print(setup.get_weights(0, 10))
     
-    # train.readFile()
-    # train.tokenize_sample()
-
-    sentence = train.read_list('sentences')[5]
-
-    tokens = train.mt.tokenize(sentence)
-    print(tokens)
-
-    # print(train.read_list('sentences'))
-    # print(train.read_list('SentenceWeights'))
+    train.readFile()
+    train.tokenize_sample()
+    print(train.read_list('sentences'))
+    print(train.read_list('SentenceWeights'))
 
 
 
