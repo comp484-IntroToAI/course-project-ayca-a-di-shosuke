@@ -20,7 +20,7 @@ class Train():
             i += 1
             
     def create_individuals(self, article):
-        words = self.mt.tokenize(str(article['article']).lower())
+        words = self.get_words(article)
         word_weights = self.get_word_weights(words) 
 
         sentences, sentence_weights = self.get_sentences(words, word_weights)
@@ -31,6 +31,12 @@ class Train():
 
         # TODO: for each sentence, create an individual with weight_attr sentence_weights[i]
 
+    def get_words(self, article):
+        ar = article['article'].lower()
+        ar_no_new_lines = ar.replace("\ n", "")
+        tokens = self.mt.tokenize(ar_no_new_lines)
+        return tokens
+        
 
     def get_word_weights(self, words):
         vocab = self.read_list("filtered")
@@ -113,10 +119,16 @@ if __name__ == "__main__":
     ## setup.create_parallel_weight_list()
     # print(setup.get_weights(0, 10))
     
-    train.readFile()
-    train.tokenize_sample()
-    print(train.read_list('sentences'))
-    print(train.read_list('SentenceWeights'))
+    # train.readFile()
+    # train.tokenize_sample()
+
+    sentence = train.read_list('sentences')[5]
+
+    tokens = train.mt.tokenize(sentence)
+    print(tokens)
+
+    # print(train.read_list('sentences'))
+    # print(train.read_list('SentenceWeights'))
 
 
 
