@@ -5,11 +5,15 @@ class GeneticAlgorithm():
     def __init__(self):
         creator.create("FitnessMax", base.Fitness, weights=(1.0,))
         creator.create("Individual", list, fitness=creator.FitnessMax)
+
         self.toolbox = base.Toolbox
-        self.toolbox.register("attr_bool", random.randint, 0, 1)
-        self.toolbox.register("individual", tools.initRepeat, creator.Individual, self.toolbox.attr_bool, n=100)
-        self.toolbox.register("population", tools.initRepeat, list, self.toolbox.individual)
-        
+        self.toolbox.register(self, "attr_weight", random.random)
+        # self.toolbox.register("individual", tools.initRepeat, creator.Individual, self.toolbox.attr_weight, n=10)
+        # self.toolbox.register("population", tools.initRepeat, list, self.toolbox.individual)
+
+        self.toolbox.register("individual", self.initIndividual, creator.Individual, self.toolbox.attr_weight, n=100)
+        self.toolbox.register("population", self.initPopulation, list, self.toolbox.individual)
+
         self.toolbox.register("mate", tools.cxTwoPoint)
         self.toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=1, indpb=0.1)
         self.toolbox.register("select", tools.selTournament, tournsize=3)
@@ -17,7 +21,13 @@ class GeneticAlgorithm():
         
         self.pop = self.toolbox.population(n=50)
         self.CXPB, self.MUTPB, self.NGEN = 0.5, 0.2, 40
-        
+
+    def initIndividual(self, icls, content):
+        return icls(content)
+
+    def initPopulation(self, pcls, ind_init):
+        contents = self.read_list("filtered")
+        return pcls(ind_init(c) for c in contents)
         
     def evaluate(self, individual):
         pass
@@ -62,3 +72,10 @@ class GeneticAlgorithm():
     def run_algorithm(self):
         for g in range(self.NGEN):
             self.select_next_gen()
+
+
+if __name__ == "__main__":
+    ga = GeneticAlgorithm()
+    ind1 = ga.toolbox.individual()
+    print(ind1)
+

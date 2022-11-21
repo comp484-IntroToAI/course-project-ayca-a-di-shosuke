@@ -1,14 +1,16 @@
-from sacremoses import MosesTokenizer
-import tensorflow as tf
-import tensorflow_datasets as tfds
+# from sacremoses import MosesTokenizer
+# import tensorflow as tf
+# import tensorflow_datasets as tfds
 import pickle
-import regex as re
+import random
+# import regex as re
 
 
 class Setup():
     def __init__(self):
-        self.tokenize = MosesTokenizer()
-        
+        # self.tokenize = MosesTokenizer()
+        pass
+
     # write list to binary file
     def write_list(self, a_list, file_name):
         with open(file_name, 'wb') as fp:
@@ -48,13 +50,6 @@ class Setup():
         current_list.extend(self.vocab)
         current_list = list(set(current_list))
         self.write_list(current_list, "vocab")
-        
-    def printVocabulary(self):
-        print("fetching vocabulary")
-        # print(self.read_list("vocab")[2000:2100]/)
-        print("filtered")
-        print(len(self.read_list("filtered")))
-        print(self.read_list("filtered"))
     
     def filter_words_characters(self):
         allowed_chars = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'-")
@@ -69,8 +64,39 @@ class Setup():
             print(str(x))
         self.write_list(new_words, "filtered")
 
+    def create_parallel_weight_list(self):
+        vocab = self.read_list("filtered")
+        weights = []
+
+        for word in vocab:
+            weights.append(random.random())
+
+        self.write_list(weights, "weights")
+
+    def get_filtered_vocabulary(self, start_index=0, end_index=-1):
+        filtered_list = self.read_list("filtered")
+
+        if end_index == -1:
+            end_index = len(filtered_list)
+
+        return filtered_list[start_index : end_index]
+
+    def get_weights(self, start_index=0, end_index=-1):
+        weights = self.read_list("weights")
+
+        if end_index == -1:
+            end_index = len(weights)
+
+        return weights[start_index : end_index]
+
         
 if __name__ == "__main__":
     setup = Setup()
+
     # setup.filter_words_characters()
-    setup.printVocabulary()
+    print(setup.get_filtered_vocabulary(0, 10))
+
+    # setup.create_parallel_weight_list()
+    print(setup.get_weights(0, 10))
+
+
