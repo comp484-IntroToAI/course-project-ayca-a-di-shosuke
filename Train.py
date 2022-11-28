@@ -11,10 +11,9 @@ class Train():
     def __init__(self):
         self.mt = MosesTokenizer()
         self.md = MosesDetokenizer()
-        self.vocab = self.read_list("filtered")[0:1000]
-        self.weights = self.read_list("weights")[0:1000]
-        self.write_list([],'sentences_1000')
-        self.write_list([],'SentenceWeights_1000')
+        self.vocab = self.read_list("filtered")
+        self.weights = self.read_list("weights")
+        self.all_vocab = dict(zip(self.vocab, self.weights))
 
     def tokenize_sample(self):
         i = 0
@@ -28,8 +27,8 @@ class Train():
         word_weights = self.get_word_weights(words) 
 
         sentences, sentence_weights = self.get_sentences(words, word_weights)
-        self.write_list(sentences, 'sentences_1000')
-        self.write_list(sentence_weights, 'SentenceWeights_1000')
+        self.write_list(sentences, 'sentences')
+        self.write_list(sentence_weights, 'SentenceWeights')
 
     def get_words(self, article):
         ar = str(article['article'].numpy()).lower()
@@ -44,10 +43,9 @@ class Train():
 
         for word in words:
             try:
-                i = self.vocab.index(word)
-                weight = self.weights[i]
+                weight = self.all_vocab[word]
                 weights_to_return.append(weight)
-            except ValueError:
+            except KeyError:
                 weights_to_return.append(0)
 
         return weights_to_return
