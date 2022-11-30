@@ -108,10 +108,10 @@ class Train():
         
 if __name__ == "__main__":
     train = Train()
-    train.readFile()
-    train.tokenize_sample()
+    # train.readFile()
+    # train.tokenize_sample()
     # print(train.read_list('sentences'))
-    # print(train.read_list('SentenceWeights'))
+    print(train.read_list('trainingSentenceWeights'))
 
 
 

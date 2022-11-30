@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3e9a095-59b8-40a1-91db-9f14de8a0abf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/EvolutionaryModelNoClass.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EvolutionaryModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/EvolutionaryModel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/Setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EvolutionaryModelNoClass.py" beforeDir="false" afterPath="$PROJECT_DIR$/EvolutionaryModelNoClass.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Train.py" beforeDir="false" afterPath="$PROJECT_DIR$/Train.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,8 +37,8 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Documents/GitHub/homework-4-uncertainty-and-bayes-networks-a-di-ayca-1" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
