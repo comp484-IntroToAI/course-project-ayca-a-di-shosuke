@@ -39,10 +39,16 @@ class Train():
 
     def get_abstracts(self):
         abstracts = []
-        for article in list(self.train_set)[:2]:
-            abstracts.append(article['abstract'])
-        print(abstracts)
-        # self.write_list(abstracts, 'trainingAbstracts')
+        i=0
+        for article in list(self.train_set):
+            print(i)
+            ab = str(article['abstract'].numpy()).lower()
+            ab = " ".join(ab.split('\\n'))
+            without_n = "".join(filter(lambda x: x.isalpha() or x.isspace() or x == ".", ab))
+            tokens = self.mt.tokenize(without_n)
+            abstracts.append(tokens)
+            i+=1
+        self.write_list(abstracts, 'trainingAbstracts')
         
 
     def get_word_weights(self, words):
@@ -115,11 +121,12 @@ class Train():
         
 if __name__ == "__main__":
     train = Train()
-    train.readFile()
+    # train.readFile()
     # train.tokenize_sample()
-    # print(train.read_list('sentences'))
     # print(train.read_list('trainingSentenceWeights'))
-    train.get_abstracts()
+    # train.get_abstracts()
+    print(len(train.read_list('trainingAbstracts')))
+
 
 
 
