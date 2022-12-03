@@ -7,11 +7,8 @@ class GeneticAlgorithm():
         creator.create("Individual", list, fitness=creator.FitnessMax)
 
         self.toolbox = base.Toolbox
-        self.toolbox.register(self, "attr_weight", random.random)
-        # self.toolbox.register("individual", tools.initRepeat, creator.Individual, self.toolbox.attr_weight, n=10)
-        # self.toolbox.register("population", tools.initRepeat, list, self.toolbox.individual)
 
-        self.toolbox.register("individual", self.initIndividual, creator.Individual, self.toolbox.attr_weight, n=100)
+        self.toolbox.register("individual", self.initIndividual, creator.Individual, n=100)
         self.toolbox.register("population", self.initPopulation, list, self.toolbox.individual)
 
         self.toolbox.register("mate", tools.cxTwoPoint)
