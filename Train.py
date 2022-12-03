@@ -100,7 +100,7 @@ class Train():
     
     def readFile(self, data_name = 'scientific_papers'):
         print("Reading Data")
-        self.train_set = tfds.load(data_name, split='train') # delete take for whole training set
+        self.train_set = tfds.load(data_name, split='train', data_dir='D:') # delete take for whole training set
 
     def get_filtered_vocabulary(self, start_index=0, end_index=-1):
         filtered_list = self.read_list("filtered")
@@ -125,7 +125,9 @@ if __name__ == "__main__":
     # train.tokenize_sample()
     # print(train.read_list('trainingSentenceWeights'))
     # train.get_abstracts()
-    print(len(train.read_list('trainingAbstracts')))
+    abs = train.read_list('trainingAbstracts')
+    for ab in abs:
+        print(ab)
 
 
 

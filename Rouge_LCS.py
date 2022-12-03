@@ -27,7 +27,7 @@ class Rouge():
         # end of function lcs
 
     def metrics(self, X, Y):
-        lcs = rouge.lcs(X, Y)
+        lcs = self.lcs(X, Y)
         print("Length of LCS is ", lcs)
         precision = lcs/len(Y)
         recall = lcs/len(X)
@@ -48,3 +48,4 @@ if __name__ == "__main__":
     # X = ["Hello, my name is Pooh.", "I'm from California.", "Nice to meet you."]
     # Y = ["Hello, my name is Pooh.", "Nice to meet you."]
     result = rouge.metrics(X, Y)
+    print(result)

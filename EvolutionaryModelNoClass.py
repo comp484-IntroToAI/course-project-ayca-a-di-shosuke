@@ -3,8 +3,9 @@ import pickle
 import heapq
 import operator
 import statistics as stats
+from sacremoses import MosesTokenizer, MosesDetokenizer
 from deap import creator, base, tools, algorithms
-from Rouge import Rouge
+from rouge_score import rouge_scorer
 
 
 def read_list(file_name):
@@ -69,20 +70,87 @@ def invalid_fitness(offspring):
 
 def get_best_inds(limit=6):
     lst = [ind.fitness.values[0] for ind in pop]
-    print(lst)
-    # lst = [153,124,1243,2345,4654,4654,4654,234,46,345]
+    # print(lst)
     lst_i = [(lst[i], i) for i in range(len(lst))]
-    print(lst_i)
+    # print(lst_i)
     
     best = heapq.nlargest(limit, lst_i)
     inds = sorted([best[i][1] for i in range(len(best))])
 
-    print(best)
+    # print(best)
     print(inds)
 
-    sentences = read_list("trainingSentences")
-    summary = [sentences[i].capitalize() for i in inds]
-    print(' '.join(summary))
+    
+    summary = [sentences[i] for i in inds]
+    print("summary: ", ' '.join(summary))
+    
+    # abstract = read_list("trainingAbstracts")
+    print("abstract: ", ' '.join(abstract))
+
+    rouge = rouge_scorer.RougeScorer(['rouge1', 'rougeL'], use_stemmer=True)
+    print(rouge.score(' '.join(summary), ' '.join(abstract)))
+
+
+def create_individuals(article):
+        words = get_words(article)
+        word_weights = get_word_weights(words) 
+        sentences, sentence_weights = get_sentences(words, word_weights)
+    
+
+def get_word_weights(words):
+    weights_to_return = []
+
+    for word in words:
+        try:
+            weight = vocab[word]
+            weights_to_return.append(weight)
+        except KeyError:
+            weights_to_return.append(0)
+
+    return weights_to_return
+
+def get_sentences(words, word_weights):
+    md = MosesDetokenizer()
+
+    sentences = []
+    sentence_weights = []
+
+    start_i = 0
+
+    while True:
+        try:
+            end_i = words.index('.', start_i)
+            
+            sentence = md.detokenize(words[start_i:end_i+1])
+            sentences.append(sentence)
+
+            sentence_weight = stats.mean(word_weights[start_i:end_i+1])
+            sentence_weights.append(sentence_weight)
+
+            start_i = end_i+1
+            
+        except ValueError:
+            break
+
+    return sentences, sentence_weights
+
+def get_words(article):
+    mt = MosesTokenizer()
+    ar = str(article['article'].numpy()).lower()
+    ar = " ".join(ar.split('\\n'))
+    without_n = "".join(filter(lambda x: x.isalpha() or x.isspace() or x == ".", ar))
+    tokens = mt.tokenize(without_n)
+    return tokens
+
+
+def create_dictionary():
+    vocab = read_list("filtered")
+    weights = read_list("weights")
+    word_weights = dict(zip(vocab, weights))
+    return word_weights
+
+
+
 
 
 def run_algorithm():
@@ -103,13 +171,23 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 toolbox.register("evaluate", evaluate)
 
 pop = toolbox.population()
-CXPB, MUTPB, NGEN = 0.5, 0.2, 15
+CXPB, MUTPB, NGEN = 0.5, 0.2, 50
 
 
+word_weights = create_dictionary()
+
+
+
+
+
+sentences = read_list("trainingSentences")
+abstract = read_list("trainingAbstracts")[0]
+sent_count = abstract.count('.')
+print(sent_count)
 
 # Evaluate the entire population
 evaluate_pop()
 run_algorithm()
 
-get_best_inds()
+get_best_inds(sent_count)
 
