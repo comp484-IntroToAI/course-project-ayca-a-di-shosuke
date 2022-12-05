@@ -1,5 +1,6 @@
 # This file builds a vocab dictionary into a pickle file. The vocab consists
-# of alphabetic words and corresponding random weights between 0 and 1. 
+# of alphabetic words. This file also creates list-readable versions of abstracts
+# and articles. 
 
 import tensorflow_datasets as tfds
 import pickle
@@ -20,10 +21,6 @@ class Setup():
         with open(file_name, 'wb') as fp:
             pickle.dump(a_list, fp)
             print('Done writing list into a binary file')
-            
-    def edit_list(self, a_list, file_name = 'trained_weights'):
-        with open(file_name, 'ab') as fp:
-            pickle.dump(a_list, fp)
 
     # Read list to memory
     def read_list(self, file_name = 'vocab_dict'):
@@ -35,16 +32,6 @@ class Setup():
     def read_vocab_dict(self):
         vocab = self.read_list("vocab_dict")
         return vocab
-    
-    def read_individuals(self, filename):
-        n_list = []
-        with open(filename, 'rb') as fp:
-            try:
-                while True:
-                    n_list.append(pickle.load(fp))
-            except EOFError:
-                    pass
-        return n_list
     
     # read training set from tfds 
     def read_papers_file(self, data_name = 'scientific_papers'):
@@ -90,13 +77,6 @@ class Setup():
         new_words = list(filter(self.filter_words, words))
         return new_words
     
-    # create weights between 0-1
-    # def create_random_weights(self, number):
-    #     weights = deque()
-    #     for num in range(number):
-    #         weights.append(random.random())
-    #     return weights
-    
     ################################ Create Article Lists ################################
     
     def read_articles(self):
@@ -117,7 +97,7 @@ if __name__ == "__main__":
     setup = Setup()
     # setup.buildVocabulary() # takes ~40 minutes to run on laptop
     # print(setup.read_vocab_dict())
-    # setup.read_articles()
+    # setup.read_articles() # takes < 10 minutes to run on laptop
     # print(setup.read_list('articles')[0])
     # print(setup.read_list('abstracts')[0])
     # print(setup.read_list('new_vocab'))
