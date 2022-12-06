@@ -55,7 +55,7 @@ class GAHelpers():
         article = "".join(filter(lambda x: x.isalpha() or x.isspace() or x == ".", article))
         return article
 
-    # return a deque of deques of setnence weights
+    # return a deque of deques of sentence weights
     def get_summary_weights(self, sentences, vocab, threshold):
         summary = []
         for sentence in sentences:

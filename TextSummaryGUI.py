@@ -1,13 +1,22 @@
 import tkinter as tk
 from tkinter import scrolledtext
+from EvolutionaryModel import GAHelpers
 
 
-def generateSummary():
+def generate_summary():
     input_text = input_text_box.get("1.0", tk.END)
-    # summary = "You will see our wonderful summary here."
+    summary = ga.summarize(dictionary, input_text, threshold)
     output_text_box.config(state="normal")
-    output_text_box.insert(tk.END, input_text.lower())
+    output_text_box.insert(tk.END, summary)
     output_text_box.config(state="disabled")
+
+
+ga = GAHelpers()
+vocab = ga.read_list('vocab_dict')
+weights = ga.read_list('new_vocab')
+# dictionary = ga.update_weights(vocab, weights)
+dictionary = {'new': 0.9, 'test': 0.1} # TODO: replace with line above once model is trained
+threshold = 0.6
 
 
 window = tk.Tk()
@@ -31,7 +40,7 @@ btn_summary = tk.Button(
     width=20,
     height=3,
     fg="black",
-    command=generateSummary
+    command=generate_summary
 )
 btn_summary.grid(row=1, column=0)
 
