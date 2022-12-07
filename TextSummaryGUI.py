@@ -5,7 +5,8 @@ from EvolutionaryModel import GAHelpers
 
 def generate_summary():
     input_text = input_text_box.get("1.0", tk.END)
-    summary = ga.summarize(dictionary, input_text, threshold)
+    # summary = ga.summarize(dictionary, input_text, threshold)
+    summary = "Ethics in Machine Learning and Other Domain-Specific AI Algorithms Imagine, in the near future, a bank using a machine learning algorithm to recommend mortgage applications for approval.\\nSec- 3 The Ethics of Artificial Intelligence ond, if the programmers had manually input what they considered a good move in each possible situation, the resulting system would not have been able to make stronger chess moves than its creators.\\nThis may seem like an unenviable position from the perspective of public relations, but it’s hard to see what other guarantee of ethical behavior would be possible for a general intelligence operating on unforeseen problems, across domains, with preferences over distant consequences.\\nSimilarly, the Principle of Ontogeny Non-Discrimination is consistent with the claim that the creators or owners of an AI system with moral status may have special duties to their artificial mind which they do not have to another artificial mind, even if the minds in question are qualitatively similar and have the same moral status.\\nTo illustrate why some of our moral norms need to be rethought in the context of AI reproduction, it will suffice to consider just one exotic property of AIs: their capacity for rapid reproduction.\\nIt may seem premature to speculate, but one does suspect that some AI paradigms are more likely than others to eventually prove conducive to the creation of intelligent self- modifying agents whose goals remain predictable even after multiple iterations of self- 15 The Ethics of Artificial Intelligence improvement."
     output_text_box.config(state="normal")
     output_text_box.insert(tk.END, summary)
     output_text_box.config(state="disabled")
