@@ -89,8 +89,8 @@ class Setup():
             abstracts.append(str(article['abstract']))
             print(i)
             i = i + 1
-        self.write_list(articles, 'articles')
-        self.write_list(abstracts, 'abstracts')
+        self.write_list(articles, 'articles.pkl')
+        self.write_list(abstracts, 'abstracts.pkl')
         
 if __name__ == "__main__":
     tic = time.perf_counter()
@@ -98,9 +98,9 @@ if __name__ == "__main__":
     # setup.buildVocabulary() # takes ~40 minutes to run on laptop
     # print(setup.read_vocab_dict())
     # setup.read_articles() # takes < 10 minutes to run on laptop
-    # print(setup.read_list('articles')[0])
-    # print(setup.read_list('abstracts')[0])
-    # print(setup.read_list('new_vocab'))
+    # print(setup.read_list('articles.pkl')[0])
+    # print(setup.read_list('abstracts.pkl')[0])
+    print(len(setup.read_list('new_vocab')))
     print((time.perf_counter() - tic)/60) # time process
 
 

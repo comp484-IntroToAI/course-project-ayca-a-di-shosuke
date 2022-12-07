@@ -120,7 +120,7 @@ if __name__ == "__main__":
     creator.create("Individual", list, fitness = creator.FitnessMax)
     
     # read vocab, articles, and abstract files into lists
-    vocab = helpers.read_list()
+    vocab = helpers.read_list()[0:100000]
     print(len(vocab))
     articles, abstracts = helpers.read_articles()
     
@@ -135,7 +135,7 @@ if __name__ == "__main__":
                      toolbox.attr_float, n = IND_SIZE)
     
     # limit size of population and create population
-    POP_SIZE = 100
+    POP_SIZE = 250
     pop = list()
     for i in range(POP_SIZE):
         pop.append(toolbox.individual())
