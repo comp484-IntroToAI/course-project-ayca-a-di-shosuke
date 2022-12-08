@@ -14,15 +14,33 @@ This is an important problem because it is a computationally inexpensive way to 
 
 ### Genetic Algorithm
 
-- description of what GA is
+A genetic algorithm is a solution to an optimization problem that mimics evolution. The algorithm involves creating a population of individuals, and then mating those individuals with the best match so that future generations have what's positive about both individuals. There are also random mutations involved, which keeps the optimization from hovering at local maximums, so that the solution can go towards the global maximum. The following pseudocode describes how our algorithm approached the genetic algorithm process. 
 
 ```
-add pseudocode
+create a population
+assign individuals list of weights
+for each generation:
+  mate individuals
+    cross over weights to make children
+    mutate weights in some individuals
+  evaluate children
+  make children the new population
 ```
 
 ### Evaluation
 
-- description of ROUGE
+To evaluate the children we used a metric called ROUGE-L. This stands for Recall-Oriented Understudy for Gisting Evaluation Longest common substring. Essentially, ROUGE is used for evaluating summary by analyzing the similarity of content between two texts. We used the Longest Common Substring (LCS) as our evaluation metric, which measures a summary by the longest string of words in common between the two texts. We used this because we wanted not just to capture unigrams or bigrams, but also the structure of the reference summary. 
+
+Our evaluation pseudocode is shown below:
+
+```
+Given a vocab and list of weights:
+  create a sentence
+  keep sentences with weights above a threshold
+  combine to a summary
+  get ROUGE-L score
+  redefine weights basesd on score
+```
 
 ## Installation
 
@@ -32,11 +50,35 @@ add pseudocode
 
 ### Setup.py
 
+This file is used to setup the training information needed to run the genetic algorithm. The runnable processes are:
+
+- Creating Vocabulary:
+
+**buildVocabulary()** - takes about 40 minutes to run on a laptop. Uses scientific articles dataset and parses unique words into a list, saved as a pickle file. 
+
+- Creating Dataset:
+
+**read_articles()** - takes about 10 minutes to run on a laptop. Creates a list version of articles and abstracts and saves them into 2 pickle files. 
+
 ### EvolutionaryModel.py
+
+This file handles the genetic algorithm. Necessary steps before running:
+
+- create vocabulary dictionary
+- create article dataset
+- create abstract dataset
+- change number of generations, population size, and number of training articles as necessary. 
 
 ### TextSummaryGUI.py
 
+A file containing a simple GUI for inputting articles, which implements the genetic algorithm output as the summary function. 
+
 ### Pickled Files
+
+- **vocab_dict.pkl**: Contains a list of unique words parsed from training set.
+- **abstracts.pkl**: Contains a list of all training abstracts.
+- **articles.pkl**: Contains a list of all training articles. 
+- **new_vocab.pkl**: Contains list of best individual weights from genetic algorithm. 
 
 ## Technology Used
 
@@ -49,17 +91,19 @@ add pseudocode
 - Random
 - DEAP
 - Pickle
-- NLTK.Tokenize
+- NLTK
 - RE
 - Keras
 - Keras_NLP
 - Time
+- TKinter
+
 
 ## Credits
 
 ### Databases
 
-- TensorFlow Datasets Scientific Papers
+- [TensorFlow Datasets Scientific Papers](https://www.tensorflow.org/datasets/catalog/scientific_papers)
 
 ### Sources
 
@@ -67,4 +111,4 @@ add pseudocode
 
 ### Code Inspriation
 
-- GA-Text-Summarization
+- [GA Text Summarization](https://github.com/wanchichen/GA-Text-Summarization) by William Chen
