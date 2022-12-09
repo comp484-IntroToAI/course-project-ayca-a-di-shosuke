@@ -49,8 +49,9 @@ class GAHelpers():
         return words
 
     # filter non-words from sentences (other than likely characters)
-    def filter_sentence(self, article):
-        article = article.lower()
+    def filter_sentence(self, article, type):
+        if type == "article":
+            article = article.lower()
         article = " ".join(article.split('\\n'))
         article = "".join(filter(lambda x: x.isalpha() or x.isspace() or x == ".", article))
         return article
@@ -77,7 +78,7 @@ class GAHelpers():
     
     # filter and tokenize article and return summary weights
     def summarize(self, dictionary, article, threshold):
-        article = self.filter_sentence(article)
+        article = self.filter_sentence(article, "article")
         sentences = sent_tokenize(article)
         return self.get_summary_weights(sentences, dictionary, threshold)
     
