@@ -97,7 +97,7 @@ if __name__ == "__main__":
     setup = Setup()
     # setup.buildVocabulary() # takes ~40 minutes to run on laptop
     # print(setup.read_vocab_dict())
-    # setup.read_articles() # takes < 10 minutes to run on laptop
+    # setup.read_articles() # takes < 5-10 minutes to run on laptop
     # print(setup.read_list('articles.pkl')[0])
     # print(setup.read_list('abstracts.pkl')[0])
     print(len(setup.read_list('new_vocab')))
