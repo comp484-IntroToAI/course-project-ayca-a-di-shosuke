@@ -30,7 +30,6 @@ class GAHelpers():
     def write_list(self, a_list, file_name = 'new_vocab'):
         with open(file_name, 'wb') as fp:
             pickle.dump(a_list, fp)
-            print('Done writing list into a binary file')
     
     # get articles and abstracts into local memory lists
     def read_articles(self):
