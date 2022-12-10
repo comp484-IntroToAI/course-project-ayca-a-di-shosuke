@@ -34,7 +34,7 @@ class GAHelpers():
     
     # get articles and abstracts into local memory lists
     def read_articles(self):
-        return self.read_list('articles')[0:1000], self.read_list('abstracts')[0:1000]
+        return self.read_list('articles.pkl')[0:10], self.read_list('abstracts.pkl')[0:10]
     
     # use new weights and save them into the vocab
     def update_weights(self, vocab, weights):
@@ -83,15 +83,11 @@ class GAHelpers():
         return self.get_summary_weights(sentences, dictionary, threshold)
     
     # Use Rouge-L to score created summary against abstract
-    def score_summary(self, summary, abstract):
+    def score_summary(self, summary, abstract, model):
         avg = 0
         if len(summary) <= 0:
             return 0
         summary = " ".join(summary) # make sentence list into string summary
-        inputs = keras.Input(shape=(), dtype='string')
-        outputs = tf.strings.lower(inputs)
-        model = keras.Model(inputs, outputs)
-        model.compile(metrics=[keras_nlp.metrics.RougeL()])
         x = tf.constant([abstract])
         y = tf.constant([summary])
         metric_dict = model.evaluate(x, y, return_dict=True, verbose=False)
@@ -99,20 +95,24 @@ class GAHelpers():
         return (avg/3)*100 # get f1-score as percent of 100
         
     # score invalid fitnesses and update vocab
-    def evaluate(self, vocab, ind, articles, abstracts, threshold):
+    def evaluate(self, vocab, ind, articles, abstracts, threshold, model):
         dictionary = self.update_weights(vocab, ind)
         score = 0
         length = len(articles)
         for i in range(length): # go through all articles and summarize/score
             summary = self.summarize(dictionary, articles[i], threshold)
-            score = score + self.score_summary(summary, abstracts[i])
+            score = score + self.score_summary(summary, abstracts[i], model)
         return {score/length}
     
     
 ################################ Algorithm ################################
 
 if __name__ == "__main__":
-    
+    inputs = keras.Input(shape=(), dtype='string')
+    outputs = tf.strings.lower(inputs)
+    model = keras.Model(inputs, outputs)
+    model.compile(metrics=[keras_nlp.metrics.RougeL()])
+        
     helpers = GAHelpers()
     helpers.write_list([], 'new_vocab')
     
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     creator.create("Individual", list, fitness = creator.FitnessMax)
     
     # read vocab, articles, and abstract files into lists
-    vocab = helpers.read_list()[0:100000]
+    vocab = helpers.read_list()[0:10000]
     print(len(vocab))
     articles, abstracts = helpers.read_articles()
     
@@ -136,7 +136,7 @@ if __name__ == "__main__":
                      toolbox.attr_float, n = IND_SIZE)
     
     # limit size of population and create population
-    POP_SIZE = 250
+    POP_SIZE = 50
     pop = list()
     for i in range(POP_SIZE):
         pop.append(toolbox.individual())
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     toolbox.register("select", tools.selTournament, tournsize = 5) # select best individuals out of 5
     
     # setup variables for generation
-    num_generations = 50
+    num_generations = 10
     threshold= 0.6
     max_score = 0
     max_ind = None
@@ -182,7 +182,7 @@ if __name__ == "__main__":
         print("Evaluate Invalid Fitness")
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
         for ind in invalid_ind:
-            fitness = helpers.evaluate(vocab, ind, articles, abstracts, threshold)
+            fitness = helpers.evaluate(vocab, ind, articles, abstracts, threshold, model)
             # print(fitness)
             ind.fitness.values = fitness
         
