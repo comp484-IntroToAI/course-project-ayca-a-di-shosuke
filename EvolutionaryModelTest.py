@@ -8,6 +8,7 @@ from nltk.tokenize import sent_tokenize
 import re
 import keras_nlp
 import keras
+import winsound
 
 ################################ Helpers ################################
 
@@ -110,7 +111,27 @@ class GAHelpers():
             summary = self.summarize(dictionary, articles[i], threshold)
             score = score + self.score_summary(summary, abstracts[i])
         return {score/length}
-    
+
+    # TODO
+    def init_individual(self, icls, sample_size, vocab_size):
+        contents = self.read_list("D:/course-project-ayca-a-di-shosuke/vocab_files/new_vocab_g10_p50_a" + sample_size + "_v" + vocab_size)
+        return icls(contents)    
+
+    def get_sample_size_str(self, sample_size):
+        if sample_size == 10:
+            return '0010'
+        elif sample_size == 50:
+            return '0050'
+        elif sample_size == 100:
+            return '0100'
+
+    def get_vocab_size_str(self, vocab_size):
+        if vocab_size == 1000:
+            return '01000'
+        elif vocab_size == 10000:
+            return '10000'
+        elif vocab_size == 50000:
+            return '50000'
     
 ################################ Algorithm ################################
 
@@ -118,95 +139,114 @@ if __name__ == "__main__":
     
     helpers = GAHelpers()
     
-    # setup creator with individuals
-    creator.create("FitnessMax", base.Fitness, weights=(1.0,))
-    creator.create("Individual", list, fitness = creator.FitnessMax)
-    
-    # read vocab, articles, and abstract files into lists
-    vocab = helpers.read_list()[:1000]
-    print(len(vocab))
-    articles, abstracts = helpers.read_articles(10)
-    
-    # limit size of individual
-    IND_SIZE = len(vocab)
-    print(IND_SIZE)
-    
-    # setup individuals to be lists of floats
-    toolbox = base.Toolbox()
-    toolbox.register("attr_float", random.random)
-    toolbox.register("individual", tools.initRepeat, creator.Individual, 
-                     toolbox.attr_float, n = IND_SIZE)
-    
-    # limit size of population and create population
+    NUM_GENERATIONS = 10
     POP_SIZE = 50
-    pop = list()
-    for i in range(POP_SIZE):
-        pop.append(toolbox.individual())
-    
-    # set up mating and mutation
-    CXPB = 0.8 # probability of crossing 
-    MUTPB = 0.05 # probability of mutating
-    toolbox.register("mate", tools.cxTwoPoint)
-    toolbox.register("select", tools.selTournament, tournsize = 5) # select best individuals out of 5
-    
-    # setup variables for generation
-    num_generations = 10
-    threshold= 0.6
-    max_score = 0
-    max_ind = None
-    avg_fitness = list()
-    best_fitness = list()
-    
-    # iterate through each generation
-    for i in range(num_generations):
-        print("Generation " + str(i))
-        
-        # create offspring from population
-        offspring = toolbox.select(pop, POP_SIZE)
-        offspring = list(map(toolbox.clone, offspring))
 
-        # apply crossover
-        for child1, child2 in zip(offspring[::2], offspring[1::2]):
-            if random.random() < CXPB:
-                toolbox.mate(child1, child2)
-                del child1.fitness.values
-                del child2.fitness.values
-        print("Mating Done")
-        
-        # apply mutation
-        for mutant in offspring:
-            if random.random() < MUTPB:
-                mutant[int(random.random() * IND_SIZE)] = 0
-                del mutant.fitness.values
-        print("Mutations Done")
-        
-        # evaluate invalid fitness scores using ROUGE-L
-        print("Evaluate Invalid Fitness")
-        invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-        for ind in invalid_ind:
-            fitness = helpers.evaluate(vocab, ind, articles, abstracts, threshold)
-            # print(fitness)
-            ind.fitness.values = fitness
-        
-        # create new population
-        pop[:] = offspring
-        
-        fitness = 0
-        best_gen = 0
-        max_ind = []
-        
-        # get max and average scores for this generation
-        print("Get Max Scores")
-        for ind in pop:
-            fitness += ind.fitness.values[0]
-            if max_score < ind.fitness.values[0]:
-                max_score = ind.fitness.values[0]
-                max_ind = ind
+    # for samples in [10, 50, 100]:
+    #     for vocabs in [1000, 10000, 50000]:
 
-            if best_gen < ind.fitness.values[0]:
-                best_gen = ind.fitness.values[0]
-        avg_fitness.append(fitness/POP_SIZE)
-        best_fitness.append(best_gen)
-    print(avg_fitness)
-    print(best_fitness)
+    for sample, vocab in [(10, 1000), (10, 10000), (10, 50000), (50, 1000), (50, 10000), (100, 10000), (100, 50000)]:
+
+        SAMPLE_SIZE = sample
+        VOCAB_SIZE = vocab   
+
+        # setup creator with individuals
+        creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+        creator.create("Individual", list, fitness = creator.FitnessMax)
+        
+        # read vocab, articles, and abstract files into lists
+        vocab = helpers.read_list()[:VOCAB_SIZE]
+        print(len(vocab))
+        articles, abstracts = helpers.read_articles(SAMPLE_SIZE)
+        print(len(articles), len(abstracts))
+        
+        # limit size of individual
+        IND_SIZE = len(vocab)
+        print(IND_SIZE)
+        
+        # setup individuals to be lists of floats
+        toolbox = base.Toolbox()
+        # toolbox.register("attr_float", random.random)
+        # toolbox.register("individual", tools.initRepeat, creator.Individual, 
+        #                  toolbox.attr_float, n = IND_SIZE)
+
+        toolbox.register("individual", helpers.init_individual, creator.Individual, helpers.get_sample_size_str(SAMPLE_SIZE), helpers.get_vocab_size_str(VOCAB_SIZE))
+        
+        # create population
+        pop = list()
+        for i in range(POP_SIZE):
+            pop.append(toolbox.individual())
+        
+        # set up mating and mutation
+        CXPB = 0.8 # probability of crossing 
+        MUTPB = 0.05 # probability of mutating
+        toolbox.register("mate", tools.cxTwoPoint)
+        toolbox.register("select", tools.selTournament, tournsize = 5) # select best individuals out of 5
+        
+        # setup variables for generation
+        threshold= 0.6
+        max_score = 0
+        max_ind = None
+        avg_fitness = list()
+        best_fitness = list()
+        
+        # iterate through each generation
+        for i in range(NUM_GENERATIONS):
+            print("Generation " + str(i))
+            
+            # create offspring from population
+            offspring = toolbox.select(pop, POP_SIZE)
+            offspring = list(map(toolbox.clone, offspring))
+
+            # apply crossover
+            for child1, child2 in zip(offspring[::2], offspring[1::2]):
+                if random.random() < CXPB:
+                    toolbox.mate(child1, child2)
+                    del child1.fitness.values
+                    del child2.fitness.values
+            print("Mating Done")
+            
+            # apply mutation
+            for mutant in offspring:
+                if random.random() < MUTPB:
+                    mutant[int(random.random() * IND_SIZE)] = 0
+                    del mutant.fitness.values
+            print("Mutations Done")
+            
+            # evaluate invalid fitness scores using ROUGE-L
+            print("Evaluate Invalid Fitness")
+            invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+            for ind in invalid_ind:
+                fitness = helpers.evaluate(vocab, ind, articles, abstracts, threshold)
+                # print(fitness)
+                ind.fitness.values = fitness
+            
+            # create new population
+            pop[:] = offspring
+            
+            fitness = 0
+            best_gen = 0
+            max_ind = []
+            
+            # get max and average scores for this generation
+            print("Get Max Scores")
+            for ind in pop:
+                fitness += ind.fitness.values[0]
+                if max_score < ind.fitness.values[0]:
+                    max_score = ind.fitness.values[0]
+                    max_ind = ind
+
+                if best_gen < ind.fitness.values[0]:
+                    best_gen = ind.fitness.values[0]
+            avg_fitness.append(fitness/POP_SIZE)
+            best_fitness.append(best_gen)
+        print(avg_fitness)
+        print(best_fitness)
+
+        helpers.write_list(avg_fitness, 'avg_fitness_g10_p50_a' + helpers.get_sample_size_str(SAMPLE_SIZE) + '_v' + helpers.get_vocab_size_str(VOCAB_SIZE))
+        helpers.write_list(best_fitness, 'best_fitness_g10_p50_a' + helpers.get_sample_size_str(SAMPLE_SIZE) + '_v' + helpers.get_vocab_size_str(VOCAB_SIZE))
+
+        duration = 1000  # milliseconds
+        freq = 440  # Hz
+        winsound.Beep(freq, duration)
         

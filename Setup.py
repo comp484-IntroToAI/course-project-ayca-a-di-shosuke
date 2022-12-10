@@ -133,6 +133,5 @@ if __name__ == "__main__":
     #     setup.write_test_samples(num)
 
     # print(len(setup.read_list('new_vocab')))
-    print((time.perf_counter() - tic)/60) # time process
-
+    # print((time.perf_counter() - tic)/60) # time process
 
