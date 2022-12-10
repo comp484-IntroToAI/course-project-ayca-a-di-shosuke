@@ -2,6 +2,7 @@
 # of alphabetic words. This file also creates list-readable versions of abstracts
 # and articles. 
 
+import random
 import tensorflow_datasets as tfds
 import pickle
 import re
@@ -79,7 +80,7 @@ class Setup():
     
     ################################ Create Article Lists ################################
     
-    def read_articles(self):
+    def read_articles_train(self):
         train_set = list(tfds.load('scientific_papers', split='train'))
         articles = []
         abstracts = []
@@ -91,16 +92,47 @@ class Setup():
             i = i + 1
         self.write_list(articles, 'articles.pkl')
         self.write_list(abstracts, 'abstracts.pkl')
+
+    def read_articles_test(self):
+
+        train_set = list(tfds.load('scientific_papers', split='test', data_dir='D:'))
+        articles = []
+        abstracts = []
+        i = 0
+        for article in train_set:
+            articles.append(str(article['article']))
+            abstracts.append(str(article['abstract']))
+            print(i)
+            i = i + 1
+        self.write_list(articles, 'articles_test.pkl')
+        self.write_list(abstracts, 'abstracts_test.pkl')
+
+    def write_test_samples(self, sample_size):
+        articles = self.read_list('articles_test.pkl')
+        abstracts = self.read_list('abstracts_test.pkl')
+        article_samples, abstract_samples = zip(*random.sample(list(zip(articles, abstracts)), sample_size))
+        self.write_list(article_samples, 'articles_test_' + str(sample_size) + '.pkl')
+        self.write_list(abstract_samples, 'abstracts_test_' + str(sample_size) + '.pkl')
         
 if __name__ == "__main__":
     tic = time.perf_counter()
     setup = Setup()
+    
     # setup.buildVocabulary() # takes ~40 minutes to run on laptop
     # print(setup.read_vocab_dict())
-    # setup.read_articles() # takes < 5-10 minutes to run on laptop
+    
+    # setup.read_articles_train() # takes < 5-10 minutes to run on laptop
     # print(setup.read_list('articles.pkl')[0])
     # print(setup.read_list('abstracts.pkl')[0])
-    print(len(setup.read_list('new_vocab')))
+
+    # setup.read_articles_test()
+    # print(setup.read_list('articles_test.pkl')[0])
+    # print(setup.read_list('abstracts_test.pkl')[0])
+
+    # for num in [10, 50, 100]:
+    #     setup.write_test_samples(num)
+
+    # print(len(setup.read_list('new_vocab')))
     print((time.perf_counter() - tic)/60) # time process
 
 
