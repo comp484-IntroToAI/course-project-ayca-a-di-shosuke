@@ -4,13 +4,13 @@ from EvolutionaryModel import GAHelpers
 
 
 ga = GAHelpers()
-vocab = ga.read_list('vocab_dict')[50000]
-weights = ga.read_list('new_vocab')
+vocab = ga.read_list('vocab_dict')[10000]
+weights = ga.read_list('avg_fitness_g10_p50_a0010_v10000')
 dictionary = ga.update_weights(vocab, weights)
 
 
 def generate_summary():
-    threshold = 0.1
+    threshold = 0.7
     input_text = input_text_box.get("1.0", tk.END)
     input_text = ga.filter_sentence(input_text, "sentence")
     summary_lower = ga.summarize(dictionary, input_text, threshold)
