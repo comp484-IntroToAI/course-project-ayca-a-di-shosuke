@@ -33,7 +33,7 @@ class GAHelpers():
     
     # get articles and abstracts into local memory lists
     def read_articles(self):
-        return self.read_list('articles.pkl')[0:10], self.read_list('abstracts.pkl')[0:10]
+        return self.read_list('articles.pkl')[0:1], self.read_list('abstracts.pkl')[0:1]
     
     # use new weights and save them into the vocab
     def update_weights(self, vocab, weights):
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     creator.create("Individual", list, fitness = creator.FitnessMax)
     
     # read vocab, articles, and abstract files into lists
-    vocab = helpers.read_list()[0:10000]
+    vocab = helpers.read_list()[0:10]
     print(len(vocab))
     articles, abstracts = helpers.read_articles()
     
@@ -135,7 +135,7 @@ if __name__ == "__main__":
                      toolbox.attr_float, n = IND_SIZE)
     
     # limit size of population and create population
-    POP_SIZE = 50
+    POP_SIZE = 75
     pop = list()
     for i in range(POP_SIZE):
         pop.append(toolbox.individual())
@@ -210,5 +210,8 @@ if __name__ == "__main__":
     print(best_fitness)
         
     # update vocab file to reflect new weights
+    print("adding weights to file")
+    weights = []
     for num in max_ind:
-        helpers.edit_list(num)
+        weights.append(num)
+    helpers.write_list(weights)
