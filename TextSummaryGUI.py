@@ -4,8 +4,8 @@ from EvolutionaryModel import GAHelpers
 
 
 ga = GAHelpers()
-vocab = ga.read_list('vocab_dict')[1000]
-weights = ga.read_list('./vocab_files/new_vocab_g10_p50_a0100_v01000')
+vocab = ga.read_list('vocab_dict')[:1000]
+weights = ga.read_list('trained_weights')
 dictionary = ga.update_weights(vocab, weights)
 
 

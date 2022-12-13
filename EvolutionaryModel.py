@@ -58,13 +58,14 @@ class GAHelpers():
     # return a deque of deques of sentence weights
     def get_summary_weights(self, sentences, vocab, threshold):
         summary = []
-        print(sentences)
         for sentence in sentences:
-            print(sentence)
             words = self.regTokenize(sentence)
             sentence_weight = self.get_word_weights(words, vocab)
-            if sentence_weight/len(words) > threshold:
-                summary.append(sentence)
+            try:
+                if sentence_weight/len(words) > threshold:
+                    summary.append(sentence)
+            except ZeroDivisionError:
+                pass
         return summary
 
     # retrieve word weights from vocab and return deque of sentence weights
