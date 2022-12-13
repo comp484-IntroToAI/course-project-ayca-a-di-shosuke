@@ -45,46 +45,57 @@ window.geometry("%dx%d" % (width, height))
 window.update_idletasks()
 
 
+# input_frame = tk.Frame(window, width=width, height=height/4)
+# input_frame.pack(side="top")
+
 input_text_box = scrolledtext.ScrolledText(
+    window,
+    # input_frame,
     # width=window.winfo_width(),
-    width=(int)(width/8.1),
-    # height=(int)(height/80)
+    width=50,
+    height=10,
     )
-input_text_box.grid(row=0, column=0)
-# input_text_box.pack(side="top")
+# input_text_box.grid(row=0, column=0)
+input_text_box.pack(side="top", anchor="n", fill="x")
 
 
 btn_summary = tk.Button(
+    window,
     text="Generate Summary",
     width=20,
     height=3,
     fg="black",
     command=generate_summary
 )
-# btn_summary.pack(side="top", pady=10)
-btn_summary.grid(row=1, column=0, pady=10)
+btn_summary.pack(side="top", anchor="n", pady=10)
+# btn_summary.pack(side="top", anchor="center", pady=10)
+# btn_summary.grid(row=1, column=0, pady=10)
 
 
 
+# output_frame = tk.Frame(window, width=width)
 output_text_box = scrolledtext.ScrolledText(
+    window,
+    width=50,
+    height=10,
     # width=window.winfo_width(),
-    width=(int)(width/8.1),
-    # height=(int)(height/80),
-    state="disabled",
+    # width=(int)(width/15),
+    # height=(int)(height/100),
 )
-# output_text_box.pack(side="top")
-output_text_box.grid(row=2, column=0)
+# output_frame.pack(side="top")
+output_text_box.pack(side="top", anchor="nw", fill="x")
+# output_text_box.grid(row=2, column=0)
 
 
 
-footer_frame = tk.Frame(window)
+footer_frame = tk.Frame(window, width=width)
 input_threshold_label = Label(footer_frame, text = '  Threshold ', font=('calibre', 10, 'bold'))
 input_threshold_box = Entry(footer_frame, font=('calibre', 10,'normal'))
 input_threshold_box.insert(0, "0.03")
 input_threshold_desc = Label(footer_frame, text = '   *Decrease threshold if "Cannot generate summary" or for a longer summary, and increase threshold for a shorter summary. Threshold decreases automatically if too high to generate a summary.', font=('calibre', 10, 'normal'))
 
-# footer_frame.pack(side="top", anchor="nw", pady=10)
-footer_frame.grid(row=3, column=0, pady=10)
+footer_frame.pack(side="top", anchor="nw", pady=10)
+# footer_frame.grid(row=3, column=0, pady=10)
 input_threshold_label.pack(side="left")
 input_threshold_box.pack(side="left")
 input_threshold_desc.pack(side="left")
