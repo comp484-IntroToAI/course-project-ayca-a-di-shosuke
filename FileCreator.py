@@ -129,9 +129,9 @@ if __name__ == "__main__":
     # print(setup.read_list('articles_test.pkl')[0])
     # print(setup.read_list('abstracts_test.pkl')[0])
 
-    # for num in [10, 50, 100]:
-    #     setup.write_test_samples(num)
+    # for num in [10, 50, 100, 250]:
+        # setup.write_test_samples(num)
 
-    # print(len(setup.read_list('new_vocab')))
+    # print(setup.read_list('best_fitness_g10_p50_a0010_v10000'))
     # print((time.perf_counter() - tic)/60) # time process
 
