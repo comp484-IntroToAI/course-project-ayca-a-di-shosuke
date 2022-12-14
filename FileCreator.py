@@ -21,7 +21,6 @@ class Setup():
     def write_list(self, a_list, file_name = 'vocab_dict'):
         with open(file_name, 'wb') as fp:
             pickle.dump(a_list, fp)
-            print('Done writing list into a binary file')
 
     # Read list to memory
     def read_list(self, file_name = 'vocab_dict'):
@@ -56,8 +55,8 @@ class Setup():
             article = str(article['article']).lower() # convert to lower
             tokens = self.regTokenize(article) # tokenize
             tokens = self.filter_all_words(tokens) # filter out non-words
-            words.update(dict(zip(tokens, list([0]*len(tokens)))))
-            print(i)
+            words.update(dict(zip(tokens, list([0]*len(tokens))))) # dictionary is faster
+            print(i) # used for keeping track of how far into the articles it is
             i = i + 1
         self.write_list(list(words.keys()), 'vocab_dict')
         
@@ -80,8 +79,10 @@ class Setup():
     
     ################################ Create Article Lists ################################
     
-    def read_articles_train(self):
-        train_set = list(tfds.load('scientific_papers', split='train'))
+    # creates pickled lists of articles and abstracts from tfds
+    # "type" input refers to testing or training
+    def read_articles(self, type = 'train'):
+        train_set = list(tfds.load('scientific_papers', split=type))
         articles = []
         abstracts = []
         i = 0
@@ -89,24 +90,15 @@ class Setup():
             articles.append(str(article['article']))
             abstracts.append(str(article['abstract']))
             print(i)
-            i = i + 1
-        self.write_list(articles, 'articles.pkl')
-        self.write_list(abstracts, 'abstracts.pkl')
+            i = i + 1 # used for keeping track of how far in the process it is
+        if type == 'train':
+            self.write_list(articles, 'articles.pkl')
+            self.write_list(abstracts, 'abstracts.pkl')
+        else:
+            self.write_list(articles, 'articles_test.pkl')
+            self.write_list(articles, 'abstracts_test.pkl')
 
-    def read_articles_test(self):
-
-        train_set = list(tfds.load('scientific_papers', split='test', data_dir='D:'))
-        articles = []
-        abstracts = []
-        i = 0
-        for article in train_set:
-            articles.append(str(article['article']))
-            abstracts.append(str(article['abstract']))
-            print(i)
-            i = i + 1
-        self.write_list(articles, 'articles_test.pkl')
-        self.write_list(abstracts, 'abstracts_test.pkl')
-
+    # get size of testing articles and abstracts of amount sample_size
     def write_test_samples(self, sample_size):
         articles = self.read_list('articles_test.pkl')
         abstracts = self.read_list('abstracts_test.pkl')
@@ -115,23 +107,22 @@ class Setup():
         self.write_list(abstract_samples, 'abstracts_test_' + str(sample_size) + '.pkl')
         
 if __name__ == "__main__":
-    tic = time.perf_counter()
+    tic = time.perf_counter() # used to track how long process takes
     setup = Setup()
     
     # setup.buildVocabulary() # takes ~40 minutes to run on laptop
     # print(setup.read_vocab_dict())
     
-    # setup.read_articles_train() # takes < 5-10 minutes to run on laptop
+    # setup.read_articles('train') # takes < 5-10 minutes to run on laptop
     # print(setup.read_list('articles.pkl')[0])
     # print(setup.read_list('abstracts.pkl')[0])
 
-    # setup.read_articles_test()
+    # setup.read_articles('test')
     # print(setup.read_list('articles_test.pkl')[0])
     # print(setup.read_list('abstracts_test.pkl')[0])
 
     # for num in [10, 50, 100, 250]:
-        # setup.write_test_samples(num)
-
-    # print(setup.read_list('best_fitness_g10_p50_a0010_v10000'))
-    # print((time.perf_counter() - tic)/60) # time process
+        # setup.write_test_samples(num) # create testing files
+    
+    print((time.perf_counter() - tic)/60) # time process
 
