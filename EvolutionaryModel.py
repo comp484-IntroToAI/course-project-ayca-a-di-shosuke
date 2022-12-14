@@ -21,6 +21,7 @@ class GAHelpers():
             n_list = pickle.load(fp)
             return n_list
         
+    # add element to already-stored pickle file list
     def edit_list(self, number, file_name = 'new_vocab'):
         old_list = self.read_list(file_name)
         old_list.append(number)
@@ -62,7 +63,7 @@ class GAHelpers():
             words = self.regTokenize(sentence)
             sentence_weight = self.get_word_weights(words, vocab)
             try:
-                if sentence_weight/len(words) > threshold:
+                if sentence_weight/len(words) > threshold:# add summary if greater than threshold
                     summary.append(sentence)
             except ZeroDivisionError:
                 pass
@@ -94,7 +95,7 @@ class GAHelpers():
         y = tf.constant([summary])
         metric_dict = model.evaluate(x, y, return_dict=True, verbose=False)
         avg = metric_dict["f1_score"] + metric_dict['precision'] + metric_dict['recall']
-        return (avg/3)*100 # get f1-score as percent of 100
+        return (avg/3)*100 # get f1-score, precision, and recall together as percent of 100
         
     # score invalid fitnesses and update vocab
     def evaluate(self, vocab, ind, articles, abstracts, threshold, model):
@@ -110,6 +111,7 @@ class GAHelpers():
 ################################ Algorithm ################################
 
 if __name__ == "__main__":
+    # setup ROUGE model
     inputs = keras.Input(shape=(), dtype='string')
     outputs = tf.strings.lower(inputs)
     model = keras.Model(inputs, outputs)
@@ -188,9 +190,8 @@ if __name__ == "__main__":
             # print(fitness)
             ind.fitness.values = fitness
         
-        # create new population
+        # create new population and variables
         pop[:] = offspring
-        
         fitness = 0
         best_gen = 0
         max_ind = []
@@ -202,13 +203,10 @@ if __name__ == "__main__":
             if max_score < ind.fitness.values[0]:
                 max_score = ind.fitness.values[0]
                 max_ind = ind
-
             if best_gen < ind.fitness.values[0]:
                 best_gen = ind.fitness.values[0]
         avg_fitness.append(fitness/POP_SIZE)
         best_fitness.append(best_gen)
-        for num in max_ind:
-            helpers.edit_list(num)
     print(avg_fitness)
     print(best_fitness)
         
