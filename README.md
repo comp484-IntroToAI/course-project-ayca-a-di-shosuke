@@ -48,7 +48,7 @@ Given a vocab and list of weights:
 
 ## File Descriptions
 
-### Setup.py
+### FileCreator.py
 
 This file is used to setup the training information needed to run the genetic algorithm. The runnable processes are:
 
@@ -105,9 +105,9 @@ A file containing a simple GUI for inputting articles, which implements the gene
 
 - [TensorFlow Datasets Scientific Papers](https://www.tensorflow.org/datasets/catalog/scientific_papers)
 
-### Sources
+### Paper Inpspiration
 
-
+Chen, William, Kensal Ramos, and Kalyan Naidu Mullaguri. "Genetic Algorithms For Extractive Summarization." *arXiv preprint arXiv:2105.02365 (2021).*
 
 ### Code Inspriation
 
